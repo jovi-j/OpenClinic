@@ -97,4 +97,4 @@ classDiagram
     AppointmentStatus ..> Appointment
 ````
 
-This model can change, I will update it based on RFCs on the [/docs] folder project.
+This model can change, I will update it based on RFCs on the [docs](/docs) folder.
