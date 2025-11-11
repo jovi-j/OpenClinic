@@ -1,3 +1,6 @@
+### DEV ENV Files
+src/main/resources/application-dev.yaml
+
 HELP.md
 .gradle
 build/
