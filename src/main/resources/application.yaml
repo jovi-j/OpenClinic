@@ -2,9 +2,9 @@ spring:
   application:
     name: OpenClinic
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
-    username: myuser
-    password: secret
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
