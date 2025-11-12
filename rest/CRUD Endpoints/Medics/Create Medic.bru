@@ -1,0 +1,28 @@
+meta {
+  name: Create Medic
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/medics
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "person": {
+      "name": "Jovi",
+      "cpf": "123456789-00",
+      "dateOfBirth": "08/02/1999"
+    },
+    "crm": "CRM-1234",
+    "type": "clinco geral"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
