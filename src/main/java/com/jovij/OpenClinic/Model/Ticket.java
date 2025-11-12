@@ -4,6 +4,7 @@ import com.jovij.OpenClinic.Model.Enums.TicketPriority;
 import com.jovij.OpenClinic.Model.Enums.TicketStatus;
 import com.jovij.OpenClinic.Model.Generics.GenericModel;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +16,9 @@ public class Ticket extends GenericModel implements Comparable<Ticket> {
 
     private TicketPriority ticketPriority;
     private TicketStatus status;
+
+    @ManyToOne
+    private TicketQueue ticketQueue;
 
     @Override
     public String toString(){
