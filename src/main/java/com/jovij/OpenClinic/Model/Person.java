@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -13,5 +13,5 @@ import java.util.Date;
 public class Person extends GenericModel {
     private String name;
     private String cpf;
-    private Date birthDate;
+    private LocalDate birthDate;
 }
