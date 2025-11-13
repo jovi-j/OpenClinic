@@ -1,0 +1,25 @@
+meta {
+  name: Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/patients
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "jovi",
+    "cpf": "111999444-55",
+    "birthDate": "08/02/1999",
+    "membershipId": "0001"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
