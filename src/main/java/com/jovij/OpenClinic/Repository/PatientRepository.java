@@ -1,11 +1,11 @@
 package com.jovij.OpenClinic.Repository;
 
 import com.jovij.OpenClinic.Model.Patient;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 @Repository
-public interface PatientRepository extends CrudRepository<Patient, UUID> {
+public interface PatientRepository extends JpaRepository<Patient, UUID> {
 }
