@@ -1,4 +1,4 @@
-package com.jovij.OpenClinic.Model.DTO;
+package com.jovij.OpenClinic.Model.DTO.Schedule;
 
 import java.time.LocalTime;
 import java.time.Month;

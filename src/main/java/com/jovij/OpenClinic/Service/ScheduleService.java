@@ -1,7 +1,7 @@
 package com.jovij.OpenClinic.Service;
 
 import com.jovij.OpenClinic.Model.Appointment;
-import com.jovij.OpenClinic.Model.DTO.ScheduleDTO;
+import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleDTO;
 import com.jovij.OpenClinic.Model.Enums.AppointmentStatus;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.Schedule;
