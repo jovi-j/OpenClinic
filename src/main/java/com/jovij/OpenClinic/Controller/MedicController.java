@@ -1,14 +1,11 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.MedicDTO;
+import com.jovij.OpenClinic.Model.DTO.Medic.MedicDTO;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Service.MedicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -28,5 +25,11 @@ public class MedicController {
         Medic createdMedic = medicService.create(medicDTO);
         URI location = URI.create("/medics/" + createdMedic.getId());
         return ResponseEntity.created(location).body(createdMedic);
+    }
+
+    @GetMapping
+    public ResponseEntity<Iterable<Medic>> listAll() {
+        Iterable<Medic> medics = medicService.listAll();
+        return ResponseEntity.ok(medics);
     }
 }

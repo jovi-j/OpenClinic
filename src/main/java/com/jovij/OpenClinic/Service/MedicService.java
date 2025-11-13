@@ -1,6 +1,6 @@
 package com.jovij.OpenClinic.Service;
 
-import com.jovij.OpenClinic.Model.DTO.MedicDTO;
+import com.jovij.OpenClinic.Model.DTO.Medic.MedicDTO;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.MedicRepository;
@@ -40,5 +40,9 @@ public class MedicService {
         medic.setType(medicDTO.type());
 
         return medicRepository.save(medic);
+    }
+
+    public Iterable<Medic> listAll() {
+        return medicRepository.findAll();
     }
 }
