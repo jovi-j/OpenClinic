@@ -1,8 +1,46 @@
 # 🏥OPENCLINIC
 
+# Context
 This is a project that I (João Oliveira) made for studying Spring Boot principles. 🚀
 The goal is to make an system for a health care clinic that patients can schedule appointments based on schedule calendars of the medics, attendants can serve patients who have scheduled appointments beforehand or want to do that(if there are medics with open schedules), and medics can put their schedule for attending patients with the possibility to cancel an attend at any time. 
 
+# Technologies
+
+This section list all the software and frameworks that i used to make this project.
+
+## Frameworks and Languages
+
+- Java 21
+- Postgresql 16.0
+- Spring Boot
+- Spring Data
+- JPA
+- Lombok
+
+## Containerization
+
+- Docker
+- Portainer
+
+## Documentation and Planning
+
+- Obsidian
+- Plane
+
+## Building
+
+- Gradle
+
+## Testing and REST Client Testing
+
+- Bruno
+
+## IDE and Database Administration
+
+- Intellij Community Edition
+- Datagrip
+
+# Design
 The following diagram shows the initial class model for the project.
 ```mermaid
 classDiagram
