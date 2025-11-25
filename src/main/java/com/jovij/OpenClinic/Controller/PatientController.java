@@ -5,12 +5,10 @@ import com.jovij.OpenClinic.Model.Patient;
 import com.jovij.OpenClinic.Service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/patients")
@@ -28,5 +26,11 @@ public class PatientController {
         Patient createdPatient = patientService.create(personDTO);
         URI location = URI.create("/patients/" + createdPatient.getId());
         return ResponseEntity.created(location).body(createdPatient);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Patient>> listAll() {
+        List<Patient> patients = patientService.findAll();
+        return ResponseEntity.ok(patients);
     }
 }

@@ -11,13 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class PatientService {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final PatientRepository patientRepository;
     private final PersonRepository personRepository;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Autowired
     public PatientService(PatientRepository patientRepository, PersonRepository personRepository) {
@@ -38,6 +39,10 @@ public class PatientService {
         patient.setMembershipId(generateMembershipId());
 
         return patientRepository.save(patient);
+    }
+
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
     }
 
     private String generateMembershipId() {
