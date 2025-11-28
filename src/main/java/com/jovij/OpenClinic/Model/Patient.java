@@ -14,7 +14,6 @@ public class Patient extends GenericModel {
     @Column(nullable = false, unique = true)
     private String membershipId;
 
-    @OneToOne
-    @Column(nullable = false)
+    @OneToOne(optional = false)
     private Person person;
 }
