@@ -1,7 +1,12 @@
 package com.jovij.OpenClinic.Service;
 
+import com.jovij.OpenClinic.Exception.AppointmentNotAvailableException;
+import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Model.Appointment;
+import com.jovij.OpenClinic.Model.DTO.Appointment.AvailableAppointmentTimeDTO;
+import com.jovij.OpenClinic.Model.DTO.Appointment.GroupedAppointmentsDTO;
 import com.jovij.OpenClinic.Model.DTO.Appointment.ScheduleAppointmentDTO;
+import com.jovij.OpenClinic.Model.DTO.Appointment.ScheduledAppointmentDTO;
 import com.jovij.OpenClinic.Model.Enums.AppointmentStatus;
 import com.jovij.OpenClinic.Model.Patient;
 import com.jovij.OpenClinic.Repository.AppointmentRepository;
@@ -12,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -25,25 +31,41 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    public List<Appointment> findAvailableAppointmentsByMedicId(UUID medicId) {
-        return appointmentRepository.findByStatusAndSchedule_Medic_Id(AppointmentStatus.OPEN, medicId);
+    public List<GroupedAppointmentsDTO> findAvailableAppointmentsByMedicId(UUID medicId) {
+        List<Appointment> appointments = appointmentRepository.findByStatusAndSchedule_Medic_Id(AppointmentStatus.OPEN, medicId);
+        return appointments.stream()
+                .collect(Collectors.groupingBy(Appointment::getDate))
+                .entrySet().stream()
+                .map(entry -> new GroupedAppointmentsDTO(
+                        entry.getKey(),
+                        entry.getValue().stream()
+                                .map(app -> new AvailableAppointmentTimeDTO(app.getId(), app.getTime().getHour(), app.getTime().getMinute()))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Appointment schedule(ScheduleAppointmentDTO scheduleAppointmentDTO) {
+    public ScheduledAppointmentDTO schedule(ScheduleAppointmentDTO scheduleAppointmentDTO) {
         Patient patient = patientRepository.findById(scheduleAppointmentDTO.patientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         Appointment appointment = appointmentRepository.findById(scheduleAppointmentDTO.appointmentId())
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found"));
 
         if (appointment.getStatus() != AppointmentStatus.OPEN) {
-            throw new RuntimeException("Appointment is not available");
+            throw new AppointmentNotAvailableException("Appointment is not available");
         }
 
         appointment.setPatient(patient);
         appointment.setStatus(AppointmentStatus.SCHEDULED);
 
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        return new ScheduledAppointmentDTO(
+                savedAppointment.getDate(),
+                savedAppointment.getTime().getHour(),
+                savedAppointment.getTime().getMinute()
+        );
     }
 }
