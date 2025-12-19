@@ -1,5 +1,6 @@
 package com.jovij.OpenClinic.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jovij.OpenClinic.Model.Enums.TicketPriority;
 import com.jovij.OpenClinic.Model.Enums.TicketStatus;
 import com.jovij.OpenClinic.Model.Generics.GenericModel;
@@ -18,6 +19,7 @@ public class Ticket extends GenericModel implements Comparable<Ticket> {
     private TicketStatus status;
 
     @ManyToOne
+    @JsonIgnore
     private TicketQueue ticketQueue;
 
     @Override
