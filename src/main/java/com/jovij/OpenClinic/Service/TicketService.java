@@ -1,9 +1,8 @@
 package com.jovij.OpenClinic.Service;
 
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
-import com.jovij.OpenClinic.Model.DTO.Ticket.TicketCreateDTO;
+import com.jovij.OpenClinic.Model.DTO.Ticket.TicketRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Ticket.TicketResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Ticket.TicketUpdateDTO;
 import com.jovij.OpenClinic.Model.Enums.TicketStatus;
 import com.jovij.OpenClinic.Model.Ticket;
 import com.jovij.OpenClinic.Model.TicketQueue;
@@ -30,15 +29,15 @@ public class TicketService {
     }
 
     @Transactional
-    public TicketResponseDTO create(TicketCreateDTO ticketCreateDTO) {
-        TicketQueue ticketQueue = ticketQueueRepository.findById(ticketCreateDTO.ticketQueueId())
-                .orElseThrow(() -> new ResourceNotFoundException("TicketQueue not found with id: " + ticketCreateDTO.ticketQueueId()));
+    public TicketResponseDTO create(TicketRequestDTO ticketRequestDTO) {
+        TicketQueue ticketQueue = ticketQueueRepository.findById(ticketRequestDTO.ticketQueueId())
+                .orElseThrow(() -> new ResourceNotFoundException("TicketQueue not found with id: " + ticketRequestDTO.ticketQueueId()));
 
         int lastTicketNum = ticketQueue.getGeneratedTickets().size();
 
         Ticket ticket = new Ticket();
         ticket.setTicketQueue(ticketQueue);
-        ticket.setTicketPriority(ticketCreateDTO.ticketPriority());
+        ticket.setTicketPriority(ticketRequestDTO.ticketPriority());
         ticket.setStatus(TicketStatus.WAITING_ATTENDANT);
         ticket.setTicketNum(lastTicketNum + 1);
 
@@ -53,11 +52,11 @@ public class TicketService {
     }
 
     @Transactional
-    public TicketResponseDTO update(UUID id, TicketUpdateDTO ticketUpdateDTO) {
+    public TicketResponseDTO update(UUID id, TicketRequestDTO ticketRequestDTO) {
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
 
-        if (ticketUpdateDTO.ticketPriority() != null) {
-            ticket.setTicketPriority(ticketUpdateDTO.ticketPriority());
+        if (ticketRequestDTO.ticketPriority() != null) {
+            ticket.setTicketPriority(ticketRequestDTO.ticketPriority());
         }
 
         Ticket savedTicket = ticketRepository.save(ticket);

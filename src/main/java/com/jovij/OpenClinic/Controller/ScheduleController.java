@@ -1,6 +1,6 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleDTO;
+import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleResponseDTO;
 import com.jovij.OpenClinic.Service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class ScheduleController {
 
     @PostMapping
     @Operation(summary = "Create a new schedule")
-    public ResponseEntity<ScheduleResponseDTO> create(@RequestBody ScheduleDTO dto) {
+    public ResponseEntity<ScheduleResponseDTO> create(@RequestBody ScheduleRequestDTO dto) {
         ScheduleResponseDTO createdSchedule = scheduleService.create(dto);
         return ResponseEntity.ok(createdSchedule);
     }

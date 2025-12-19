@@ -3,9 +3,8 @@ package com.jovij.OpenClinic.Service;
 import com.jovij.OpenClinic.Exception.InvalidDateFormatException;
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Model.Attendant;
-import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantDTO;
+import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantUpdateDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.AttendantRepository;
@@ -35,17 +34,17 @@ public class AttendantService {
     }
 
     @Transactional
-    public AttendantResponseDTO create(AttendantDTO attendantDTO) {
+    public AttendantResponseDTO create(AttendantRequestDTO attendantRequestDTO) {
         try {
             Person person = new Person();
-            person.setName(attendantDTO.person().name());
-            person.setCpf(attendantDTO.person().cpf());
-            person.setBirthDate(LocalDate.parse(attendantDTO.person().dateOfBirth(), DATE_FORMATTER));
+            person.setName(attendantRequestDTO.person().name());
+            person.setCpf(attendantRequestDTO.person().cpf());
+            person.setBirthDate(LocalDate.parse(attendantRequestDTO.person().dateOfBirth(), DATE_FORMATTER));
             Person savedPerson = personRepository.save(person);
 
             Attendant attendant = new Attendant();
             attendant.setPerson(savedPerson);
-            attendant.setTicketWindow(attendantDTO.ticketWindow());
+            attendant.setTicketWindow(attendantRequestDTO.ticketWindow());
 
             Attendant savedAttendant = attendantRepository.save(attendant);
             return mapToDTO(savedAttendant);
@@ -61,11 +60,11 @@ public class AttendantService {
     }
 
     @Transactional
-    public AttendantResponseDTO update(UUID id, AttendantUpdateDTO attendantUpdateDTO) {
+    public AttendantResponseDTO update(UUID id, AttendantRequestDTO attendantRequestDTO) {
         Attendant attendant = attendantRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Attendant not found"));
 
-        if (attendantUpdateDTO.ticketWindow() != null) {
-            attendant.setTicketWindow(attendantUpdateDTO.ticketWindow());
+        if (attendantRequestDTO.ticketWindow() != null) {
+            attendant.setTicketWindow(attendantRequestDTO.ticketWindow());
         }
 
         Attendant savedAttendant = attendantRepository.save(attendant);

@@ -4,5 +4,5 @@ import com.jovij.OpenClinic.Model.Enums.TicketPriority;
 
 import java.util.UUID;
 
-public record TicketCreateDTO(UUID ticketQueueId, TicketPriority ticketPriority) {
+public record TicketRequestDTO(UUID ticketQueueId, TicketPriority ticketPriority) {
 }

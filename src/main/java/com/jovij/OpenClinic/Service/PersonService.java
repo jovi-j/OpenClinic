@@ -2,9 +2,8 @@ package com.jovij.OpenClinic.Service;
 
 import com.jovij.OpenClinic.Exception.InvalidDateFormatException;
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
-import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Person.PersonUpdateDTO;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +29,12 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponseDTO create(PersonDTO personDTO) {
+    public PersonResponseDTO create(PersonRequestDTO personRequestDTO) {
         try {
             Person person = new Person();
-            person.setName(personDTO.name());
-            person.setCpf(personDTO.cpf());
-            person.setBirthDate(LocalDate.parse(personDTO.dateOfBirth(), DATE_FORMATTER));
+            person.setName(personRequestDTO.name());
+            person.setCpf(personRequestDTO.cpf());
+            person.setBirthDate(LocalDate.parse(personRequestDTO.dateOfBirth(), DATE_FORMATTER));
             Person savedPerson = personRepository.save(person);
             return mapToDTO(savedPerson);
         } catch (DateTimeParseException e) {
@@ -50,19 +49,19 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponseDTO update(UUID id, PersonUpdateDTO personUpdateDTO) {
+    public PersonResponseDTO update(UUID id, PersonRequestDTO personRequestDTO) {
         try {
             Person person = personRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Person not found with id: " + id));
 
-            if (personUpdateDTO.name() != null) {
-                person.setName(personUpdateDTO.name());
+            if (personRequestDTO.name() != null) {
+                person.setName(personRequestDTO.name());
             }
-            if (personUpdateDTO.cpf() != null) {
-                person.setCpf(personUpdateDTO.cpf());
+            if (personRequestDTO.cpf() != null) {
+                person.setCpf(personRequestDTO.cpf());
             }
-            if (personUpdateDTO.dateOfBirth() != null) {
-                person.setBirthDate(LocalDate.parse(personUpdateDTO.dateOfBirth(), DATE_FORMATTER));
+            if (personRequestDTO.dateOfBirth() != null) {
+                person.setBirthDate(LocalDate.parse(personRequestDTO.dateOfBirth(), DATE_FORMATTER));
             }
 
             Person savedPerson = personRepository.save(person);

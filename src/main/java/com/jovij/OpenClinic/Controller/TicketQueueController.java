@@ -1,6 +1,6 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueDTO;
+import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueResponseDTO;
 import com.jovij.OpenClinic.Service.TicketQueueService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +26,8 @@ public class TicketQueueController {
 
     @PostMapping
     @Operation(summary = "Create a new ticket queue")
-    public ResponseEntity<TicketQueueResponseDTO> create(@RequestBody TicketQueueDTO ticketQueueDTO) {
-        TicketQueueResponseDTO createdTicketQueue = ticketQueueService.create(ticketQueueDTO);
+    public ResponseEntity<TicketQueueResponseDTO> create(@RequestBody TicketQueueRequestDTO ticketQueueRequestDTO) {
+        TicketQueueResponseDTO createdTicketQueue = ticketQueueService.create(ticketQueueRequestDTO);
         URI location = URI.create("/ticket-queues/" + createdTicketQueue.id());
         return ResponseEntity.created(location).body(createdTicketQueue);
     }

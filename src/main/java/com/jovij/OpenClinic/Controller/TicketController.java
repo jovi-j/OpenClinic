@@ -1,8 +1,7 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.Ticket.TicketCreateDTO;
+import com.jovij.OpenClinic.Model.DTO.Ticket.TicketRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Ticket.TicketResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Ticket.TicketUpdateDTO;
 import com.jovij.OpenClinic.Service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +27,8 @@ public class TicketController {
 
     @PostMapping
     @Operation(summary = "Create a new ticket")
-    public ResponseEntity<TicketResponseDTO> create(@RequestBody TicketCreateDTO ticketCreateDTO) {
-        TicketResponseDTO createdTicket = ticketService.create(ticketCreateDTO);
+    public ResponseEntity<TicketResponseDTO> create(@RequestBody TicketRequestDTO ticketRequestDTO) {
+        TicketResponseDTO createdTicket = ticketService.create(ticketRequestDTO);
         URI location = URI.create("/tickets/" + createdTicket.id());
         return ResponseEntity.created(location).body(createdTicket);
     }
@@ -43,8 +42,8 @@ public class TicketController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Update a ticket")
-    public ResponseEntity<TicketResponseDTO> update(@PathVariable UUID id, @RequestBody TicketUpdateDTO ticketUpdateDTO) {
-        TicketResponseDTO updatedTicket = ticketService.update(id, ticketUpdateDTO);
+    public ResponseEntity<TicketResponseDTO> update(@PathVariable UUID id, @RequestBody TicketRequestDTO ticketRequestDTO) {
+        TicketResponseDTO updatedTicket = ticketService.update(id, ticketRequestDTO);
         return ResponseEntity.ok(updatedTicket);
     }
 

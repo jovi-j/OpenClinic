@@ -1,4 +1,6 @@
-package com.jovij.OpenClinic.Model.DTO.Person;
+package com.jovij.OpenClinic.Model.DTO.Patient;
+
+import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 
 import java.util.UUID;
 

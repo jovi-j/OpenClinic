@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
 
-public record ScheduleDTO(
+public record ScheduleRequestDTO(
         UUID medicId,
         @Schema(description = "Month number, 1=January, 12=December")
         int month,

@@ -2,9 +2,8 @@ package com.jovij.OpenClinic.Service;
 
 import com.jovij.OpenClinic.Exception.InvalidDateFormatException;
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
-import com.jovij.OpenClinic.Model.DTO.Medic.MedicDTO;
+import com.jovij.OpenClinic.Model.DTO.Medic.MedicRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Medic.MedicResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Medic.MedicUpdateDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.Person;
@@ -36,18 +35,18 @@ public class MedicService {
     }
 
     @Transactional
-    public MedicResponseDTO create(MedicDTO medicDTO) {
+    public MedicResponseDTO create(MedicRequestDTO medicRequestDTO) {
         try {
             Person person = new Person();
-            person.setName(medicDTO.person().name());
-            person.setCpf(medicDTO.person().cpf());
-            person.setBirthDate(LocalDate.parse(medicDTO.person().dateOfBirth(), DATE_FORMATTER));
+            person.setName(medicRequestDTO.person().name());
+            person.setCpf(medicRequestDTO.person().cpf());
+            person.setBirthDate(LocalDate.parse(medicRequestDTO.person().dateOfBirth(), DATE_FORMATTER));
             Person savedPerson = personRepository.save(person);
 
             Medic medic = new Medic();
             medic.setPerson(savedPerson);
-            medic.setCrm(medicDTO.crm());
-            medic.setType(medicDTO.type());
+            medic.setCrm(medicRequestDTO.crm());
+            medic.setType(medicRequestDTO.type());
 
             Medic savedMedic = medicRepository.save(medic);
             return mapToDTO(savedMedic);
@@ -63,28 +62,28 @@ public class MedicService {
     }
 
     @Transactional
-    public MedicResponseDTO update(UUID id, MedicUpdateDTO medicUpdateDTO) {
+    public MedicResponseDTO update(UUID id, MedicRequestDTO medicRequestDTO) {
         try {
             Medic medic = medicRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Medic not found"));
             Person person = medic.getPerson();
 
-            if (medicUpdateDTO.person() != null) {
-                if (medicUpdateDTO.person().name() != null) {
-                    person.setName(medicUpdateDTO.person().name());
+            if (medicRequestDTO.person() != null) {
+                if (medicRequestDTO.person().name() != null) {
+                    person.setName(medicRequestDTO.person().name());
                 }
-                if (medicUpdateDTO.person().cpf() != null) {
-                    person.setCpf(medicUpdateDTO.person().cpf());
+                if (medicRequestDTO.person().cpf() != null) {
+                    person.setCpf(medicRequestDTO.person().cpf());
                 }
-                if (medicUpdateDTO.person().dateOfBirth() != null) {
-                    person.setBirthDate(LocalDate.parse(medicUpdateDTO.person().dateOfBirth(), DATE_FORMATTER));
+                if (medicRequestDTO.person().dateOfBirth() != null) {
+                    person.setBirthDate(LocalDate.parse(medicRequestDTO.person().dateOfBirth(), DATE_FORMATTER));
                 }
             }
 
-            if (medicUpdateDTO.crm() != null) {
-                medic.setCrm(medicUpdateDTO.crm());
+            if (medicRequestDTO.crm() != null) {
+                medic.setCrm(medicRequestDTO.crm());
             }
-            if (medicUpdateDTO.type() != null) {
-                medic.setType(medicUpdateDTO.type());
+            if (medicRequestDTO.type() != null) {
+                medic.setType(medicRequestDTO.type());
             }
 
             personRepository.save(person);

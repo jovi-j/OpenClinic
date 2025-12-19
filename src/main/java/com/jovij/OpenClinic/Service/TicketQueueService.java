@@ -2,7 +2,7 @@ package com.jovij.OpenClinic.Service;
 
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Exception.TicketQueueAlreadyExistsException;
-import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueDTO;
+import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueResponseDTO;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.TicketQueue;
@@ -28,17 +28,17 @@ public class TicketQueueService {
     }
 
     @Transactional
-    public TicketQueueResponseDTO create(TicketQueueDTO ticketQueueDTO) {
-        if (ticketQueueRepository.existsByMedicIdAndDate(ticketQueueDTO.medicId(), ticketQueueDTO.date())) {
+    public TicketQueueResponseDTO create(TicketQueueRequestDTO ticketQueueRequestDTO) {
+        if (ticketQueueRepository.existsByMedicIdAndDate(ticketQueueRequestDTO.medicId(), ticketQueueRequestDTO.date())) {
             throw new TicketQueueAlreadyExistsException("A ticket queue for this medic and date already exists.");
         }
 
         TicketQueue ticketQueue = new TicketQueue();
-        ticketQueue.setDate(ticketQueueDTO.date());
+        ticketQueue.setDate(ticketQueueRequestDTO.date());
 
-        if (ticketQueueDTO.medicId() != null) {
-            Medic medic = medicRepository.findById(ticketQueueDTO.medicId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Medic not found with id: " + ticketQueueDTO.medicId()));
+        if (ticketQueueRequestDTO.medicId() != null) {
+            Medic medic = medicRepository.findById(ticketQueueRequestDTO.medicId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Medic not found with id: " + ticketQueueRequestDTO.medicId()));
             ticketQueue.setMedic(medic);
         }
 

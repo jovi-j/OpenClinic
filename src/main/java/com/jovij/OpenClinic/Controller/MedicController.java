@@ -1,8 +1,7 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.Medic.MedicDTO;
+import com.jovij.OpenClinic.Model.DTO.Medic.MedicRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Medic.MedicResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Medic.MedicUpdateDTO;
 import com.jovij.OpenClinic.Service.MedicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +27,8 @@ public class MedicController {
 
     @PostMapping
     @Operation(summary = "Create a new medic")
-    public ResponseEntity<MedicResponseDTO> create(@RequestBody MedicDTO medicDTO) {
-        MedicResponseDTO createdMedic = medicService.create(medicDTO);
+    public ResponseEntity<MedicResponseDTO> create(@RequestBody MedicRequestDTO medicRequestDTO) {
+        MedicResponseDTO createdMedic = medicService.create(medicRequestDTO);
         URI location = URI.create("/medics/" + createdMedic.id());
         return ResponseEntity.created(location).body(createdMedic);
     }
@@ -43,8 +42,8 @@ public class MedicController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Update a medic")
-    public ResponseEntity<MedicResponseDTO> update(@PathVariable UUID id, @RequestBody MedicUpdateDTO medicUpdateDTO) {
-        MedicResponseDTO updatedMedic = medicService.update(id, medicUpdateDTO);
+    public ResponseEntity<MedicResponseDTO> update(@PathVariable UUID id, @RequestBody MedicRequestDTO medicRequestDTO) {
+        MedicResponseDTO updatedMedic = medicService.update(id, medicRequestDTO);
         return ResponseEntity.ok(updatedMedic);
     }
 

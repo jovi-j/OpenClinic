@@ -1,8 +1,7 @@
 package com.jovij.OpenClinic.Controller;
 
-import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
-import com.jovij.OpenClinic.Model.DTO.Person.PersonUpdateDTO;
 import com.jovij.OpenClinic.Service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +27,8 @@ public class PersonController {
 
     @PostMapping
     @Operation(summary = "Create a new person")
-    public ResponseEntity<PersonResponseDTO> create(@RequestBody PersonDTO personDTO) {
-        PersonResponseDTO createdPerson = personService.create(personDTO);
+    public ResponseEntity<PersonResponseDTO> create(@RequestBody PersonRequestDTO personRequestDTO) {
+        PersonResponseDTO createdPerson = personService.create(personRequestDTO);
         URI location = URI.create("/persons/" + createdPerson.id());
         return ResponseEntity.created(location).body(createdPerson);
     }
@@ -43,8 +42,8 @@ public class PersonController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Update a person")
-    public ResponseEntity<PersonResponseDTO> update(@PathVariable UUID id, @RequestBody PersonUpdateDTO personUpdateDTO) {
-        PersonResponseDTO updatedPerson = personService.update(id, personUpdateDTO);
+    public ResponseEntity<PersonResponseDTO> update(@PathVariable UUID id, @RequestBody PersonRequestDTO personRequestDTO) {
+        PersonResponseDTO updatedPerson = personService.update(id, personRequestDTO);
         return ResponseEntity.ok(updatedPerson);
     }
 
