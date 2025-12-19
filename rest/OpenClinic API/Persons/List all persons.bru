@@ -1,0 +1,50 @@
+meta {
+  name: List all persons
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/persons
+  body: none
+  auth: inherit
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/persons
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        [
+          {
+            "id": "",
+            "createdAt": "",
+            "deletedAt": "",
+            "updatedAt": "",
+            "name": "",
+            "cpf": "",
+            "birthDate": ""
+          }
+        ]
+      '''
+    }
+  }
+}

@@ -1,0 +1,73 @@
+meta {
+  name: Create a new schedule
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/schedules
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "medicId": "4ad08597-0348-49b9-bb09-795c19cda979",
+    "month": 12,
+    "year": 2025,
+    "attendanceHourStart": 8,
+    "attendanceMinuteStart": 0,
+    "attendanceHourEnd": 18,
+    "attendanceMinuteEnd": 0,
+    "lunchHourStart": 12,
+    "lunchMinuteStart": 0,
+    "lunchHourEnd": 14,
+    "lunchMinuteEnd": 0,
+    "averageTimeForAppointment": 30
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/schedules
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "medicId": "",
+        "month": 0,
+        "year": 0,
+        "attendanceHourStart": 0,
+        "attendanceMinuteStart": 0,
+        "attendanceHourEnd": 0,
+        "attendanceMinuteEnd": 0,
+        "lunchHourStart": 0,
+        "lunchMinuteStart": 0,
+        "lunchHourEnd": 0,
+        "lunchMinuteEnd": 0,
+        "averageTimeForAppointment": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

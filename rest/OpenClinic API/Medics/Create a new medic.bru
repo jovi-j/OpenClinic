@@ -1,0 +1,79 @@
+meta {
+  name: Create a new medic
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/medics
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "person": {
+      "name": "jovi",
+      "cpf": "12109322454",
+      "dateOfBirth": "02/02/1999"
+    },
+    "crm": "1234",
+    "type": "clinico geral"
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/medics
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "person": {
+          "name": "",
+          "cpf": "",
+          "dateOfBirth": ""
+        },
+        "crm": "",
+        "type": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "id": "",
+          "createdAt": "",
+          "deletedAt": "",
+          "updatedAt": "",
+          "crm": "",
+          "type": "",
+          "person": {
+            "id": "",
+            "createdAt": "",
+            "deletedAt": "",
+            "updatedAt": "",
+            "name": "",
+            "cpf": "",
+            "birthDate": ""
+          }
+        }
+      '''
+    }
+  }
+}

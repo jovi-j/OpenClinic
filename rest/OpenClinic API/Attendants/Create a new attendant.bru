@@ -1,0 +1,72 @@
+meta {
+  name: Create a new attendant
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/attendants
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "person": {
+      "name": "Bob",
+      "cpf": "98765432100",
+      "dateOfBirth": "02/03/2001"
+    },
+    "ticketWindow": 1
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/attendants
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "personId": "",
+        "ticketWindow": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "id": "",
+          "createdAt": "",
+          "deletedAt": "",
+          "updatedAt": "",
+          "ticketWindow": 0,
+          "person": {
+            "id": "",
+            "createdAt": "",
+            "deletedAt": "",
+            "updatedAt": "",
+            "name": "",
+            "cpf": "",
+            "birthDate": ""
+          }
+        }
+      '''
+    }
+  }
+}

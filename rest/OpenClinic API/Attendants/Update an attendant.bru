@@ -1,0 +1,74 @@
+meta {
+  name: Update an attendant
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/attendants/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "ticketWindow": 0
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/attendants/:id
+    method: PATCH
+    mode: json
+    params:path: {
+      id: 
+    }
+  
+    body:json: {
+      {
+        "ticketWindow": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "id": "",
+          "createdAt": "",
+          "deletedAt": "",
+          "updatedAt": "",
+          "ticketWindow": 0,
+          "person": {
+            "id": "",
+            "createdAt": "",
+            "deletedAt": "",
+            "updatedAt": "",
+            "name": "",
+            "cpf": "",
+            "birthDate": ""
+          }
+        }
+      '''
+    }
+  }
+}

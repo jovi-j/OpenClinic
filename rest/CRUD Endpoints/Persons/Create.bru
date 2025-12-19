@@ -1,21 +1,20 @@
 meta {
   name: Create
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
-  url: {{baseUrl}}/patients
+  url: {{baseUrl}}/persons
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "name": "jovi",
-    "cpf": "111999444-65",
-    "dateOfBirth": "08/02/1999",
-    "membershipId": "0001"
+    "name": "Atendente 1",
+    "cpf": "111999444-66",
+    "dateOfBirth": "08/02/1999"
   }
 }
 

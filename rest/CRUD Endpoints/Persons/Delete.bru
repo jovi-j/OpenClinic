@@ -1,0 +1,22 @@
+meta {
+  name: Delete
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/persons/84cb00af-bf96-4eea-b3df-dedf5245cd9d
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+  "id":"84cb00af-bf96-4eea-b3df-dedf5245cd9d"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
