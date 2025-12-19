@@ -1,7 +1,10 @@
 package com.jovij.OpenClinic.Service;
 
+import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
+import com.jovij.OpenClinic.Exception.ScheduleAlreadyExistsException;
 import com.jovij.OpenClinic.Model.Appointment;
 import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleDTO;
+import com.jovij.OpenClinic.Model.DTO.Schedule.ScheduleResponseDTO;
 import com.jovij.OpenClinic.Model.Enums.AppointmentStatus;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.Schedule;
@@ -11,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,28 +31,33 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Schedule create(ScheduleDTO scheduleDTO) {
-        Medic medic = medicRepository.findByName(scheduleDTO.medicName())
-                .orElseThrow(() -> new RuntimeException("Medic not found with name: " + scheduleDTO.medicName()));
+    public ScheduleResponseDTO create(ScheduleDTO scheduleDTO) {
+        Medic medic = medicRepository.findById(scheduleDTO.medicId())
+                .orElseThrow(() -> new ResourceNotFoundException("Medic not found with id: " + scheduleDTO.medicId()));
+
+        if (scheduleRepository.existsByMedicIdAndMonthAndYear(medic.getId(), Month.of(scheduleDTO.month()), Year.of(scheduleDTO.year()))) {
+            throw new ScheduleAlreadyExistsException("The medic already has a schedule for this month and year.");
+        }
 
         Schedule schedule = new Schedule();
         schedule.setMedic(medic);
-        schedule.setMonth(scheduleDTO.month());
-        schedule.setYear(scheduleDTO.year());
+        schedule.setMonth(Month.of(scheduleDTO.month()));
+        schedule.setYear(Year.of(scheduleDTO.year()));
 
         List<Appointment> appointments = generateAppointmentsForMonth(scheduleDTO, schedule);
         schedule.setAppointments(appointments);
 
-        return scheduleRepository.save(schedule);
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return mapToDTO(savedSchedule);
     }
 
     private List<Appointment> generateAppointmentsForMonth(ScheduleDTO scheduleDTO, Schedule schedule) {
         List<Appointment> appointments = new ArrayList<>();
-        LocalDate date = LocalDate.of(scheduleDTO.year().getValue(), scheduleDTO.month(), 1);
+        LocalDate date = LocalDate.of(schedule.getYear().getValue(), schedule.getMonth(), 1);
         int daysInMonth = date.lengthOfMonth();
 
         for (int day = 1; day <= daysInMonth; day++) {
-            LocalDate currentDate = LocalDate.of(scheduleDTO.year().getValue(), scheduleDTO.month(), day);
+            LocalDate currentDate = LocalDate.of(schedule.getYear().getValue(), schedule.getMonth(), day);
             if (currentDate.getDayOfWeek() != DayOfWeek.SATURDAY && currentDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
                 appointments.addAll(generateAppointmentsForDay(scheduleDTO, schedule, currentDate));
             }
@@ -61,12 +67,15 @@ public class ScheduleService {
 
     private List<Appointment> generateAppointmentsForDay(ScheduleDTO scheduleDTO, Schedule schedule, LocalDate date) {
         List<Appointment> appointments = new ArrayList<>();
-        LocalTime currentTime = scheduleDTO.attendanceTimeStart();
+        LocalTime currentTime = LocalTime.of(scheduleDTO.attendanceHourStart(), scheduleDTO.attendanceMinuteStart());
+        LocalTime attendanceTimeEnd = LocalTime.of(scheduleDTO.attendanceHourEnd(), scheduleDTO.attendanceMinuteEnd());
+        LocalTime lunchTimeStart = LocalTime.of(scheduleDTO.lunchHourStart(), scheduleDTO.lunchMinuteStart());
+        LocalTime lunchTimeEnd = LocalTime.of(scheduleDTO.lunchHourEnd(), scheduleDTO.lunchMinuteEnd());
 
-        while (currentTime.isBefore(scheduleDTO.attendanceTimeEnd())) {
-            if (scheduleDTO.lunchTimeStart() != null && scheduleDTO.lunchTimeEnd() != null &&
-                    !currentTime.isBefore(scheduleDTO.lunchTimeStart()) && currentTime.isBefore(scheduleDTO.lunchTimeEnd())) {
-                currentTime = scheduleDTO.lunchTimeEnd();
+
+        while (currentTime.isBefore(attendanceTimeEnd)) {
+            if (currentTime.isAfter(lunchTimeStart) && currentTime.isBefore(lunchTimeEnd)) {
+                currentTime = lunchTimeEnd;
                 continue;
             }
 
@@ -80,5 +89,15 @@ public class ScheduleService {
             currentTime = currentTime.plusMinutes(scheduleDTO.averageTimeForAppointment());
         }
         return appointments;
+    }
+
+    private ScheduleResponseDTO mapToDTO(Schedule schedule) {
+        return new ScheduleResponseDTO(
+                schedule.getId(),
+                schedule.getMedic().getId(),
+                schedule.getMonth(),
+                schedule.getYear(),
+                schedule.getAppointments().size()
+        );
     }
 }

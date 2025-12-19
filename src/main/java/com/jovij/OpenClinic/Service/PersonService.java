@@ -1,6 +1,9 @@
 package com.jovij.OpenClinic.Service;
 
+import com.jovij.OpenClinic.Exception.InvalidDateFormatException;
+import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonUpdateDTO;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.PersonRepository;
@@ -10,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -25,33 +30,62 @@ public class PersonService {
     }
 
     @Transactional
-    public Person create(PersonDTO personDTO) {
-        Person person = new Person();
-        person.setName(personDTO.name());
-        person.setCpf(personDTO.cpf());
-        person.setBirthDate(LocalDate.parse(personDTO.dateOfBirth(), DATE_FORMATTER));
-        return personRepository.save(person);
+    public PersonResponseDTO create(PersonDTO personDTO) {
+        try {
+            Person person = new Person();
+            person.setName(personDTO.name());
+            person.setCpf(personDTO.cpf());
+            person.setBirthDate(LocalDate.parse(personDTO.dateOfBirth(), DATE_FORMATTER));
+            Person savedPerson = personRepository.save(person);
+            return mapToDTO(savedPerson);
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateFormatException("Invalid date format. Please use dd/MM/yyyy.");
+        }
     }
 
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<PersonResponseDTO> findAll() {
+        return personRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Person update(UUID id, PersonUpdateDTO personUpdateDTO) {
-        Person person = personRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Person not found with id: " + id));
+    public PersonResponseDTO update(UUID id, PersonUpdateDTO personUpdateDTO) {
+        try {
+            Person person = personRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Person not found with id: " + id));
 
-        if (personUpdateDTO.name() != null) {
-            person.setName(personUpdateDTO.name());
-        }
-        if (personUpdateDTO.cpf() != null) {
-            person.setCpf(personUpdateDTO.cpf());
-        }
-        if (personUpdateDTO.dateOfBirth() != null) {
-            person.setBirthDate(LocalDate.parse(personUpdateDTO.dateOfBirth(), DATE_FORMATTER));
-        }
+            if (personUpdateDTO.name() != null) {
+                person.setName(personUpdateDTO.name());
+            }
+            if (personUpdateDTO.cpf() != null) {
+                person.setCpf(personUpdateDTO.cpf());
+            }
+            if (personUpdateDTO.dateOfBirth() != null) {
+                person.setBirthDate(LocalDate.parse(personUpdateDTO.dateOfBirth(), DATE_FORMATTER));
+            }
 
-        return personRepository.save(person);
+            Person savedPerson = personRepository.save(person);
+            return mapToDTO(savedPerson);
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateFormatException("Invalid date format. Please use dd/MM/yyyy.");
+        }
     }
+
+    public void delete(UUID id) {
+        if (!personRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Person not found with id: " + id);
+        }
+        personRepository.deleteById(id);
+    }
+
+    private PersonResponseDTO mapToDTO(Person person) {
+        return new PersonResponseDTO(
+                person.getId(),
+                person.getName(),
+                person.getCpf(),
+                person.getBirthDate().format(DATE_FORMATTER)
+        );
+    }
+
 }
