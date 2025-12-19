@@ -5,7 +5,7 @@ import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Model.DTO.Medic.MedicDTO;
 import com.jovij.OpenClinic.Model.DTO.Medic.MedicResponseDTO;
 import com.jovij.OpenClinic.Model.DTO.Medic.MedicUpdateDTO;
-import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.Medic;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.MedicRepository;
@@ -103,11 +103,12 @@ public class MedicService {
     }
 
     private MedicResponseDTO mapToDTO(Medic medic) {
-        PersonDTO personDTO = new PersonDTO(
+        PersonResponseDTO personResponseDTO = new PersonResponseDTO(
+                medic.getPerson().getId(),
                 medic.getPerson().getName(),
                 medic.getPerson().getCpf(),
                 medic.getPerson().getBirthDate().format(DATE_FORMATTER)
         );
-        return new MedicResponseDTO(medic.getId(), personDTO, medic.getCrm(), medic.getType());
+        return new MedicResponseDTO(medic.getId(), personResponseDTO, medic.getCrm(), medic.getType());
     }
 }

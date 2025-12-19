@@ -4,6 +4,7 @@ import com.jovij.OpenClinic.Exception.InvalidDateFormatException;
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Model.DTO.Person.PatientResponseDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.DTO.Person.PersonUpdateDTO;
 import com.jovij.OpenClinic.Model.Patient;
 import com.jovij.OpenClinic.Model.Person;
@@ -95,11 +96,12 @@ public class PatientService {
     }
 
     private PatientResponseDTO mapToDTO(Patient patient) {
-        PersonDTO personDTO = new PersonDTO(
+        PersonResponseDTO personResponseDTO = new PersonResponseDTO(
+                patient.getPerson().getId(),
                 patient.getPerson().getName(),
                 patient.getPerson().getCpf(),
                 patient.getPerson().getBirthDate().format(DATE_FORMATTER)
         );
-        return new PatientResponseDTO(patient.getId(), personDTO, patient.getMembershipId());
+        return new PatientResponseDTO(patient.getId(), personResponseDTO, patient.getMembershipId());
     }
 }

@@ -6,7 +6,7 @@ import com.jovij.OpenClinic.Model.Attendant;
 import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantDTO;
 import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantResponseDTO;
 import com.jovij.OpenClinic.Model.DTO.Attendant.AttendantUpdateDTO;
-import com.jovij.OpenClinic.Model.DTO.Person.PersonDTO;
+import com.jovij.OpenClinic.Model.DTO.Person.PersonResponseDTO;
 import com.jovij.OpenClinic.Model.Person;
 import com.jovij.OpenClinic.Repository.AttendantRepository;
 import com.jovij.OpenClinic.Repository.PersonRepository;
@@ -80,11 +80,12 @@ public class AttendantService {
     }
 
     private AttendantResponseDTO mapToDTO(Attendant attendant) {
-        PersonDTO personDTO = new PersonDTO(
+        PersonResponseDTO personResponseDTO = new PersonResponseDTO(
+                attendant.getPerson().getId(),
                 attendant.getPerson().getName(),
                 attendant.getPerson().getCpf(),
                 attendant.getPerson().getBirthDate().format(DATE_FORMATTER)
         );
-        return new AttendantResponseDTO(attendant.getId(), personDTO, attendant.getTicketWindow());
+        return new AttendantResponseDTO(attendant.getId(), personResponseDTO, attendant.getTicketWindow());
     }
 }
