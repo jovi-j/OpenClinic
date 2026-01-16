@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +25,7 @@ public class Appointment extends GenericModel {
 
     @ManyToOne(optional = false)
     @JsonIgnore
+    @ToString.Exclude
     private Schedule schedule;
 
 }

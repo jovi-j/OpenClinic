@@ -61,7 +61,7 @@ public class PatientService {
 
     private String generateMembershipId() {
         long patientCount = patientRepository.count();
-        return String.format("%06d", patientCount + 1);
+        return String.format("OPC%05d", patientCount + 1);
     }
 
     @Transactional

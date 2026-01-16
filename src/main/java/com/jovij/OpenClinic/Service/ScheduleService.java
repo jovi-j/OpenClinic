@@ -74,7 +74,7 @@ public class ScheduleService {
 
 
         while (currentTime.isBefore(attendanceTimeEnd)) {
-            if (currentTime.isAfter(lunchTimeStart) && currentTime.isBefore(lunchTimeEnd)) {
+            if (!currentTime.isBefore(lunchTimeStart) && currentTime.isBefore(lunchTimeEnd)) {
                 currentTime = lunchTimeEnd;
                 continue;
             }

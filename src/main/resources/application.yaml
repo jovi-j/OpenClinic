@@ -1,10 +1,14 @@
+server:
+  address: 0.0.0.0
+  port: 8182
+
 spring:
   application:
     name: OpenClinic
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${OPENCLINIC_DATASOURCE_URL}
+    username: ${OPENCLINIC_DATASOURCE_USERNAME}
+    password: ${OPENCLINIC_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,3 +18,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     show-sql: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

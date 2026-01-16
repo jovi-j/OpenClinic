@@ -24,5 +24,17 @@ public enum TicketStatus {
         public String toString() {
             return "SERVED";
         }
+    },
+    CALLED_BY_ATTENDANT {
+        @Override
+        public String toString() {
+            return "CALLED BY ATTENDANT";
+        }
+    },
+    CALLED_BY_MEDIC {
+        @Override
+        public String toString() {
+            return "CALLED BY MEDIC";
+        }
     }
 }

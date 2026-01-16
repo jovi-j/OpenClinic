@@ -30,6 +30,8 @@ public class TicketQueue extends GenericModel {
 
     private LocalDate date;
 
+    private Integer consultationRoom;
+
     @PostLoad
     @PostPersist
     @PostUpdate

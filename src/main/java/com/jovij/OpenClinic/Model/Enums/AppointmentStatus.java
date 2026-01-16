@@ -13,10 +13,10 @@ public enum AppointmentStatus {
             return "SCHEDULED";
         }
     },
-    DONE{
+    ATTENDED {
         @Override
         public String toString() {
-            return "DONE";
+            return "ATTENDED";
         }
     },
     CANCELLED{

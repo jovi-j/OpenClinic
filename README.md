@@ -1,138 +1,214 @@
-# 🏥OPENCLINIC
+# 🏥 OPENCLINIC
 
-# Context
-This is a project that I (João Oliveira) made for studying Spring Boot principles. 🚀
-The goal is to make an system for a health care clinic that patients can schedule appointments based on schedule calendars of the medics, attendants can serve patients who have scheduled appointments beforehand or want to do that(if there are medics with open schedules), and medics can put their schedule for attending patients with the possibility to cancel an attend at any time. 
+## Context
 
-# Technologies
+This is a project developed by João Oliveira to study Spring Boot principles and modern backend architecture. 🚀
 
-This section list all the software and frameworks that i used to make this project.
+The goal is to create a comprehensive system for a healthcare clinic where:
 
-## Frameworks and Languages
+- **Medics** can manage their monthly schedules, creating availability slots for appointments.
+- **Patients** can self-schedule appointments based on medic availability.
+- **Attendants** manage patient flow using ticket queues, serving both walk-in patients and those with scheduled
+  appointments.
+- **Ticket System** handles prioritization and routing of patients to the correct medic or attendant.
+- **Appointments** are automatically generated based on medic schedules and can be managed (scheduled, cancelled,
+  completed).
 
-- Java 21
-- Postgresql 16.0
-- Spring Boot
-- Spring Data
-- JPA
-- Lombok
+## Technologies
 
-## Containerization
+This section lists all the software, frameworks, and tools used in this project.
 
-- Docker
-- Portainer
+### Frameworks and Languages
 
-## Documentation and Planning
+- **Java 21**
+- **Spring Boot 3.5.7**
+- **Spring Data JPA**
+- **Spring Web**
+- **PostgreSQL 16.0** (Driver: `org.postgresql:postgresql`)
+- **Lombok**
+- **SpringDoc OpenAPI (Swagger UI)**
 
-- Obsidian
-- Plane
+### Containerization
 
-## Building
+- **Docker**
+- **Portainer**
 
-- Gradle
+### Documentation and Planning
 
-## Testing and REST Client Testing
+- **Obsidian**
+- **Plane**
+- **Mermaid.js** (for diagrams)
 
-- Bruno
+### Building
 
-## IDE and Database Administration
+- **Gradle**
 
-- Intellij Community Edition
-- Datagrip
+### Testing and REST Client
 
-# Design
-The following diagram shows the initial class model for the project.
+- **Bruno**
+- **Swagger UI** (Built-in)
+
+### IDE and Database Administration
+
+- **IntelliJ IDEA Community Edition**
+- **DataGrip** / **DBeaver**
+
+## Design
+
+The following diagram shows the current class model for the project.
+
 ```mermaid
 classDiagram
-class Person{
-	-string name
-	-string cpf	
-	-date birthDate
-}
+    class Person {
+        -UUID id
+        -String name
+        -String cpf
+        -LocalDate birthDate
+    }
 
-class Medic{
-	-string CRM
-	-string type
-}
+    class Medic {
+        -UUID id
+        -String crm
+        -String type
+    }
 
-class Patient{
-	-string membershipId
-}
+    class Patient {
+        -UUID id
+        -String membershipId
+    }
 
-class Attendant{
-	-int ticketWindow
-}
+    class Attendant {
+        -UUID id
+        -Integer ticketWindow
+    }
 
-class Schedule{
-	-int month
-	-int year
-}
+    class Schedule {
+        -UUID id
+        -Month month
+        -Year year
+    }
 
-class TicketAttendanceRecord{
-	-Ticket ticket
-	-Attendant attendant
-	-TicketStatus status
-}
+    class TicketQueue {
+        -UUID id
+        -LocalDate date
+        -Integer consultationRoom
+        +generateTicket(TicketPriority priority, int lastTicketNum): Ticket
+        +callNextTicket(): Ticket
+    }
 
-class TicketQueue{
-	-List<Ticket> generatedTickets
-	+generateTicket(TicketPriority priority, int lastTicketNum) : Ticket
-	+callNextTicket(): Ticket
-}
+    class Ticket {
+        -UUID id
+        -Integer ticketNum
+        -TicketPriority ticketPriority
+        -TicketStatus status
+    }
 
-class Ticket{
-	-int ticketNum
-	+ticketCode(): String
-}
+    class Appointment {
+        -UUID id
+        -LocalDate date
+        -LocalTime time
+        -AppointmentStatus status
+    }
 
-class TicketPriority{
-	<<enumeration>>
-	NORMAL
-	PREFERENTIAL
-	EXAM_RESULTS
-}
+    class TicketPriority {
+        <<enumeration>>
+        NORMAL(NMT)
+        PREFERENTIAL(PRT)
+        EXAM_RESULTS(ERT)
+    }
 
-class TicketStatus{
-	<<enumeration>>
-	WAITING_ATTENDANT
-	WAITING_APPOINTMENT
-	UNREDEEMED
-	SERVED
-}
+    class TicketStatus {
+        <<enumeration>>
+        WAITING_ATTENDANT
+        WAITING_APPOINTMENT
+        UNREDEEMED
+        SERVED
+        CALLED_BY_ATTENDANT
+        CALLED_BY_MEDIC
+    }
 
-class Appointment{
-	-date appointmentDate
-	-LocalTime appointmentTime
-}
+    class AppointmentStatus {
+        <<enumeration>>
+        OPEN
+        SCHEDULED
+        ATTENDED
+        CANCELLED
+        ABSENT_PATIENT
+    }
 
-class AppointmentStatus{
-	<<enumeration>>
-	OPEN
-	SCHEDULED
-	DONE
-	CANCELLED
-	ABSENT_PATIENT	
-}
-
-Person <-- Medic
-Person <-- Patient
-Person <-- Attendant
-
-Medic "1" *.. "1" Schedule: Opened by
-Medic "*" --> "0..1" TicketQueue 
-
-Ticket "1" ..* "0..*" TicketQueue: Generated by
-Ticket <.. TicketPriority
-Ticket <.. TicketStatus
-
-Patient "0..*" <-- "0..1" Appointment: Makes an appointment
-Attendant --> TicketAttendanceRecord: Records when a attendant gets a ticket
-Ticket --> TicketAttendanceRecord
-TicketAttendanceRecord <.. TicketStatus
-
-Appointment "1" <.. "1..*" Schedule: Monthly generated, decided by the owner of the Schedule
-
-AppointmentStatus ..> Appointment
+%% Relationships
+    Person <|-- Medic: Composition (via field)
+    Person <|-- Patient: Composition (via field)
+    Person <|-- Attendant: Composition (via field)
+    Medic "1" -- "0..*" Schedule: Has
+    Schedule "1" -- "0..*" Appointment: Generates
+    Patient "0..1" -- "0..*" Appointment: Books
+    Medic "0..1" -- "0..*" TicketQueue: Assigned to
+    TicketQueue "1" -- "0..*" Ticket: Contains
+    Ticket "0..*" -- "0..1" Medic: Called by
+    Ticket "0..*" -- "0..1" Attendant: Called by
+    Ticket "0..*" -- "0..1" Patient: Assigned to
+    Ticket ..> TicketPriority
+    Ticket ..> TicketStatus
+    Appointment ..> AppointmentStatus
 ```
 
-This model can change, I will update it based on RFCs on the [docs](/docs) folder.
+## How to Run
+
+### Prerequisites
+
+* **Java 21** installed.
+* **PostgreSQL** installed and running.
+* **Gradle** (optional, wrapper included).
+
+### Environment Variables
+
+You must set the following environment variables before running the application. You can set them in your IDE run
+configuration or in your system environment.
+
+| Variable | Description | Exa mple || :                         --- | :--- | :--- |
+| `OPEN:-----------------------------------_DATASOURCE_URL`  | JDBC URL for your PostgreSQ      L database | `jdbc:postgresql://localhost:5432/openclinic` |
+| `OPENCLINIC_DATASOURCE_USERN AME` | Database username | `postgr es` |
+| `OPENCLINIC_DATASOURCE_PASSW ORD` | Database password | `passwo rd` |
+
+### Running the Application
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd OpenClinic
+   ```
+
+2. **Build and Run using Gradle Wrapper:**
+    * **Linux/macOS:**
+      ```bash
+      ./gradlew bootRun
+      ```
+    * **Windows:**
+      ```bash
+      gradlew.bat bootRun
+      ```
+
+3. **Access the Application:**
+   The application will start on port `8182` (configured in `application.yaml`).
+    * **API Base URL:** `http://localhost:8182`
+    * **Swagger UI:** `http://localhost:8182/swagger-ui.html`
+
+## API Documentation
+
+The API is fully documented using Swagger/OpenAPI. You can access the documentation at:
+`http://localhost:8182/swagger-ui.html` (when the application is running).
+
+### Key Features & Endpoints
+
+* **Medics, Patients, Attendants:** CRUD operations via RESTful endpoints.
+* **Schedules:** Medics create monthly schedules, which auto-generate appointment slots.
+* **Appointments:**
+    * Search by patient, medic, date, and status (with pagination).
+    * Schedule and cancel appointments.
+* **Tickets & Queues:**
+    * Create ticket queues for the current date.
+    * Generate tickets with priorities.
+    * Call the next ticket (associates with Medic or Attendant).
+    * Redirect tickets from generic queues to specific medic queues.
+    * Complete tickets (marks appointment as attended).
