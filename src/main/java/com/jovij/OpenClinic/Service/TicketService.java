@@ -141,6 +141,16 @@ public class TicketService {
         return mapToDTO(savedTicket);
     }
 
+    @Transactional
+    public TicketResponseDTO markAsUnredeemed(UUID ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        ticket.setStatus(TicketStatus.UNREDEEMED);
+        Ticket savedTicket = ticketRepository.save(ticket);
+        return mapToDTO(savedTicket);
+    }
+
     private TicketResponseDTO mapToDTO(Ticket ticket) {
         return new TicketResponseDTO(
                 ticket.getId(),

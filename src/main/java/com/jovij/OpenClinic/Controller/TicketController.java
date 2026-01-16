@@ -103,4 +103,16 @@ public class TicketController {
         TicketResponseDTO completedTicket = ticketService.completeTicket(id);
         return ResponseEntity.ok(completedTicket);
     }
+
+    @PostMapping(value = "/{id}/unredeemed")
+    @Operation(summary = "Mark ticket as unredeemed", description = "Marks a ticket as unredeemed, removing it from the active queue.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ticket marked as unredeemed successfully"),
+            @ApiResponse(responseCode = "404", description = "Ticket not found")
+    })
+    public ResponseEntity<TicketResponseDTO> markAsUnredeemed(
+            @Parameter(description = "ID of the ticket to mark as unredeemed") @PathVariable UUID id) {
+        TicketResponseDTO unredeemedTicket = ticketService.markAsUnredeemed(id);
+        return ResponseEntity.ok(unredeemedTicket);
+    }
 }
