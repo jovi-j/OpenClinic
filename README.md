@@ -1,6 +1,6 @@
 # 🏥 OPENCLINIC
 
-## Context
+## 📝 Context
 
 This is a project developed by João Oliveira to study Spring Boot principles and modern backend architecture. 🚀
 
@@ -14,11 +14,11 @@ The goal is to create a comprehensive system for a healthcare clinic where:
 - **Appointments** are automatically generated based on medic schedules and can be managed (scheduled, cancelled,
   completed).
 
-## Technologies
+## 💻 Technologies
 
 This section lists all the software, frameworks, and tools used in this project.
 
-### Frameworks and Languages
+### 🏗️ Frameworks and Languages
 
 - **Java 21**
 - **Spring Boot 3.5.7**
@@ -28,32 +28,32 @@ This section lists all the software, frameworks, and tools used in this project.
 - **Lombok**
 - **SpringDoc OpenAPI (Swagger UI)**
 
-### Containerization
+### 📦Containerization
 
 - **Docker**
 - **Portainer**
 
-### Documentation and Planning
+### 📚 Documentation and Planning
 
 - **Obsidian**
 - **Plane**
 - **Mermaid.js** (for diagrams)
 
-### Building
+### 🚧 Building
 
 - **Gradle**
 
-### Testing and REST Client
+### 🧪 Testing and REST Client
 
 - **Bruno**
 - **Swagger UI** (Built-in)
 
-### IDE and Database Administration
+### 💻 IDE and Database Administration
 
 - **IntelliJ IDEA Community Edition**
 - **DataGrip** / **DBeaver**
 
-## Design
+## 📊 Design
 
 The following diagram shows the current class model for the project.
 
@@ -153,7 +153,7 @@ classDiagram
     Appointment ..> AppointmentStatus
 ```
 
-## How to Run
+## 🏃 How to Run
 
 ### Prerequisites
 
@@ -194,7 +194,7 @@ configuration or in your system environment.
     * **API Base URL:** `http://localhost:8182`
     * **Swagger UI:** `http://localhost:8182/swagger-ui.html`
 
-## API Documentation
+## 🚄 API Documentation
 
 The API is fully documented using Swagger/OpenAPI. You can access the documentation at:
 `http://localhost:8182/swagger-ui.html` (when the application is running).
