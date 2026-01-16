@@ -166,16 +166,17 @@ classDiagram
 You must set the following environment variables before running the application. You can set them in your IDE run
 configuration or in your system environment.
 
-| Variable | Description | Exa mple || :                         --- | :--- | :--- |
-| `OPEN:-----------------------------------_DATASOURCE_URL`  | JDBC URL for your PostgreSQ      L database | `jdbc:postgresql://localhost:5432/openclinic` |
-| `OPENCLINIC_DATASOURCE_USERN AME` | Database username | `postgr es` |
-| `OPENCLINIC_DATASOURCE_PASSW ORD` | Database password | `passwo rd` |
+| Variable | Description | Example |
+| --- | --- | --- |
+| `OPENCLINIC_DATASOURCE_URL`  | JDBC URL for your PostgreSQL database. | `jdbc:postgresql://localhost:5432/openclinic` |
+| `OPENCLINIC_DATASOURCE_USERN AME` | Database username | `postgres` |
+| `OPENCLINIC_DATASOURCE_PASSW ORD` | Database password | `password` |
 
 ### Running the Application
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jovi-j/OpenClinic.git
    cd OpenClinic
    ```
 
