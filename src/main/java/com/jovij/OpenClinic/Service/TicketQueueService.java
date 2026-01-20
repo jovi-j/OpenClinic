@@ -1,10 +1,12 @@
 package com.jovij.OpenClinic.Service;
 
+import com.jovij.OpenClinic.Exception.InvalidCallToNextTicketException;
 import com.jovij.OpenClinic.Exception.InvalidDateException;
 import com.jovij.OpenClinic.Exception.ResourceNotFoundException;
 import com.jovij.OpenClinic.Exception.TicketQueueAlreadyExistsException;
 import com.jovij.OpenClinic.Model.Attendant;
 import com.jovij.OpenClinic.Model.DTO.Ticket.TicketResponseDTO;
+import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueCallRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueResponseDTO;
 import com.jovij.OpenClinic.Model.Enums.TicketStatus;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,15 +70,26 @@ public class TicketQueueService {
     }
 
     @Transactional
-    public TicketResponseDTO callNextTicket(UUID ticketQueueId, UUID attendantId) {
-        TicketQueue ticketQueue = ticketQueueRepository.findById(ticketQueueId)
+    public TicketResponseDTO callNextTicket(TicketQueueCallRequestDTO ticketCall) {
+        if(ticketCall.ticketQueueId() == null ||
+            (ticketCall.attendantId() == null && ticketCall.medicId() == null)
+        ){
+            throw new InvalidCallToNextTicketException("Invalid call to next ticket.");
+        }
+        TicketQueue ticketQueue = ticketQueueRepository.findById(ticketCall.ticketQueueId())
                 .orElseThrow(() -> new ResourceNotFoundException("TicketQueue not found"));
 
         if (!ticketQueue.getDate().isEqual(LocalDate.now())) {
             throw new InvalidDateException("Cannot call tickets from a closed queue (not today's date).");
         }
 
-        List<Ticket> tickets = ticketRepository.findByTicketQueueIdAndStatusOrderByTicketPriorityDescCreatedAtAsc(ticketQueueId, TicketStatus.WAITING_ATTENDANT);
+
+        boolean fromAttendant = ticketCall.isFromAttendant();
+
+		List<Ticket> tickets = ticketRepository.findByTicketQueueIdAndStatusOrderByTicketPriorityDescCreatedAtAsc(
+            ticketCall.ticketQueueId(),
+            fromAttendant ? TicketStatus.WAITING_ATTENDANT : TicketStatus.WAITING_APPOINTMENT
+        );
 
         if (tickets.isEmpty()) {
             throw new ResourceNotFoundException("No tickets waiting in this queue.");
@@ -85,16 +97,14 @@ public class TicketQueueService {
 
         Ticket nextTicket = tickets.get(0);
 
-        if (ticketQueue.getMedic() != null) {
-            nextTicket.setMedic(ticketQueue.getMedic());
-            nextTicket.setStatus(TicketStatus.CALLED_BY_MEDIC);
-        } else if (attendantId != null) {
-            Attendant attendant = attendantRepository.findById(attendantId)
+        if (fromAttendant) {
+            Attendant attendant = attendantRepository.findById(ticketCall.attendantId())
                     .orElseThrow(() -> new ResourceNotFoundException("Attendant not found"));
             nextTicket.setAttendant(attendant);
             nextTicket.setStatus(TicketStatus.CALLED_BY_ATTENDANT);
         } else {
-            throw new IllegalArgumentException("Attendant ID is required for generic queues.");
+            nextTicket.setMedic(ticketQueue.getMedic());
+            nextTicket.setStatus(TicketStatus.CALLED_BY_MEDIC);
         }
 
         ticketRepository.save(nextTicket);

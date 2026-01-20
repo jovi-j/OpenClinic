@@ -1,11 +1,11 @@
 package com.jovij.OpenClinic.Controller;
 
 import com.jovij.OpenClinic.Model.DTO.Ticket.TicketResponseDTO;
+import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueCallRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueRequestDTO;
 import com.jovij.OpenClinic.Model.DTO.TicketQueue.TicketQueueResponseDTO;
 import com.jovij.OpenClinic.Service.TicketQueueService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/ticket-queues", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,17 +50,15 @@ public class TicketQueueController {
         return ResponseEntity.ok(ticketQueues);
     }
 
-    @PostMapping("/{id}/call-next")
+    @PostMapping("/call-next")
     @Operation(summary = "Call the next ticket in the queue", description = "Calls the next ticket in the specified queue based on priority and creation time.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Next ticket called successfully"),
             @ApiResponse(responseCode = "404", description = "Ticket queue not found or no tickets in queue"),
             @ApiResponse(responseCode = "400", description = "Cannot call tickets from a closed queue")
     })
-    public ResponseEntity<TicketResponseDTO> callNextTicket(
-            @Parameter(description = "ID of the ticket queue") @PathVariable UUID id,
-            @Parameter(description = "ID of the attendant calling the ticket (required for generic queues)") @RequestParam(required = false) UUID attendantId) {
-        TicketResponseDTO nextTicket = ticketQueueService.callNextTicket(id, attendantId);
+    public ResponseEntity<TicketResponseDTO> callNextTicket(@RequestBody TicketQueueCallRequestDTO ticketQueueCall) {
+        TicketResponseDTO nextTicket = ticketQueueService.callNextTicket(ticketQueueCall);
         return ResponseEntity.ok(nextTicket);
     }
 }
