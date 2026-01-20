@@ -45,7 +45,7 @@ public class TicketService {
         TicketQueue ticketQueue = ticketQueueRepository.findById(ticketRequestDTO.ticketQueueId())
                 .orElseThrow(() -> new ResourceNotFoundException("TicketQueue not found with id: " + ticketRequestDTO.ticketQueueId()));
 
-        int lastTicketNum = ticketQueue.getGeneratedTickets().size();
+        int lastTicketNum = ticketRepository.findLastTicketNumToday();
 
         Ticket ticket = new Ticket();
         ticket.setTicketQueue(ticketQueue);
@@ -116,7 +116,7 @@ public class TicketService {
         // Redirect ticket
         ticket.setTicketQueue(medicQueue);
         ticket.setPatient(patient);
-        ticket.setStatus(TicketStatus.WAITING_ATTENDANT);
+        ticket.setStatus(TicketStatus.WAITING_APPOINTMENT);
 
         Ticket savedTicket = ticketRepository.save(ticket);
         return mapToDTO(savedTicket);
